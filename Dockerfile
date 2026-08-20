@@ -8,19 +8,13 @@ RUN apt-get update \
 
 WORKDIR /var/www/html
 
-# نسخ ملفات التطبيق
 COPY . /var/www/html/
 
-# تأمين صلاحيات
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html/uploads
 
-# تنظيف
 RUN rm -rf /var/lib/apt/lists/*
 
-EXPOSE 80
-
-# Render يستخدم $PORT
 ENV PORT=80
 
-CMD ["apache2-foreground"]
+CMD ["sh", "-c", "sed -i \"s/Listen 80/Listen $PORT/\" /etc/apache2/ports.conf && sed -i \"s/:80/:$PORT/\" /etc/apache2/sites-enabled/000-default.conf && apache2-foreground"]

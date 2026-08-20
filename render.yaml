@@ -1,12 +1,4 @@
 services:
-  # قاعدة البيانات MySQL
-  - type: pgsql
-    name: badil-db
-    plan: free
-    database: badil
-    user: badil
-
-  # التطبيق الرئيسي
   - type: web
     name: badil-web
     runtime: docker
@@ -14,25 +6,15 @@ services:
     dockerfilePath: ./Dockerfile
     envVars:
       - key: DB_HOST
-        fromDatabase:
-          name: badil-db
-          property: host
+        value: mysql-badil
       - key: DB_PORT
-        fromDatabase:
-          name: badil-db
-          property: port
+        value: "3306"
       - key: DB_NAME
-        fromDatabase:
-          name: badil-db
-          property: database
+        sync: false
       - key: DB_USER
-        fromDatabase:
-          name: badil-db
-          property: user
+        sync: false
       - key: DB_PASS
-        fromDatabase:
-          name: badil-db
-          property: password
+        sync: false
       - key: APP_NAME
         value: نظام إدارة البدلاء
       - key: APP_DIRECTORATE
