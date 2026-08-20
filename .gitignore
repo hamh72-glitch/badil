@@ -2,16 +2,6 @@
 uploads/*
 !uploads/index.html
 
-# config.php (يحتوي كلمات سر)
-config.php
-
-# Docker (للتطوير المحلي فقط)
-Dockerfile
-docker-compose.yml
-docker-compose.production.yml
-docker-entrypoint.sh
-.dockerignore
-
 # ملفات التطوير
 node_modules/
 .vscode/
@@ -35,4 +25,8 @@ uploads/logo_*.png
 # ملفات النظام
 .installed
 .env
-.env.*
+.env.local
+.env.production
+
+# ZIP deployment
+nizam_albadal_deploy.zip

@@ -1,0 +1,41 @@
+services:
+  # قاعدة البيانات MySQL
+  - type: pgsql
+    name: badil-db
+    plan: free
+    database: badil
+    user: badil
+
+  # التطبيق الرئيسي
+  - type: web
+    name: badil-web
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: badil-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: badil-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: badil-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: badil-db
+          property: user
+      - key: DB_PASS
+        fromDatabase:
+          name: badil-db
+          property: password
+      - key: APP_NAME
+        value: نظام إدارة البدلاء
+      - key: APP_DIRECTORATE
+        value: مديرية التربية والتعليم - يطا
+    healthCheckPath: /
+    autoDeploy: true

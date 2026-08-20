@@ -1,0 +1,9 @@
+node_modules
+uploads
+*.log
+.dockerignore
+.git
+Erecord.xlsx
+inspect.cjs
+package.json
+package-lock.json
