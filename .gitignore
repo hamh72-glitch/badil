@@ -1,0 +1,38 @@
+# uploads (ملفات الرفع - حفظ فقط index.html)
+uploads/*
+!uploads/index.html
+
+# config.php (يحتوي كلمات سر)
+config.php
+
+# Docker (للتطوير المحلي فقط)
+Dockerfile
+docker-compose.yml
+docker-compose.production.yml
+docker-entrypoint.sh
+.dockerignore
+
+# ملفات التطوير
+node_modules/
+.vscode/
+.idea/
+*.log
+.DS_Store
+Thumbs.db
+
+# ملفات Excel المصدر (اختبار)
+Erecord.xlsx
+*.xlsx
+*.zip
+
+# ملفات نسخة الاستضافة المجانية
+free/
+
+# صور الشعار (يجب رفعها من الإعدادات)
+uploads/logo_*.jpg
+uploads/logo_*.png
+
+# ملفات النظام
+.installed
+.env
+.env.*

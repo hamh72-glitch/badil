@@ -1,0 +1,28 @@
+# حماية الملفات الحساسة
+<FilesMatch "^(config\.php|database\.sql|.*\.sql)$">
+  Require all denied
+</FilesMatch>
+
+# حماية مجلد uploads
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # منع الوصول المباشر إلى الملفات الحساسة
+  RewriteRule ^(config\.php|database\.sql)$ - [F,L]
+  RewriteRule ^lib/ - [F,L]
+</IfModule>
+
+Options -Indexes
+
+# ترميز عربي
+AddDefaultCharset UTF-8
+
+# ضغط
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript application/json
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
