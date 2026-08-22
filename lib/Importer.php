@@ -10,6 +10,7 @@ class Importer
      */
     public static function importSubstitutes(string $xlsxPath): array
     {
+        @set_time_limit(0);
         $rows = XlsxReader::toArray($xlsxPath);
         if (!$rows) {
             throw new Exception('الملف فارغ أو لا يحتوي على بيانات.');
@@ -87,6 +88,7 @@ class Importer
      */
     public static function importSchools(string $xlsxPath): array
     {
+        @set_time_limit(0);
         $rows = XlsxReader::toArray($xlsxPath);
         if (!$rows) {
             throw new Exception('الملف فارغ.');
@@ -128,6 +130,7 @@ class Importer
      */
     public static function importSubjects(string $xlsxPath): array
     {
+        @set_time_limit(0);
         $rows = XlsxReader::toArray($xlsxPath);
         $list = [];
         foreach ($rows as $r) {
