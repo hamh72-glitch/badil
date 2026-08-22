@@ -9,6 +9,7 @@ require_once LIB_DIR . '/Settings.php';
 require_once LIB_DIR . '/Auth.php';
 require_once LIB_DIR . '/XlsxReader.php';
 require_once LIB_DIR . '/Importer.php';
+require_once LIB_DIR . '/Notifications.php';
 
 // عزل الجلسات عبر التطبيق
 ini_set('session.cookie_httponly', '1');

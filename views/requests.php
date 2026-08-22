@@ -25,8 +25,10 @@ $pageNo = (int)get('page_no', 1);
 $where = [];
 $params = [];
 if ($isSchool) {
-    $where[] = 'v.school_user_id = ?';
+    $myName = Auth::user()['full_name'];
+    $where[] = '(v.school_user_id = ? OR v.shared_with = ?)';
     $params[] = Auth::id();
+    $params[] = $myName;
 }
 if ($status !== '' && in_array($status, ['open', 'assigned', 'ended', 'cancelled'])) {
     $where[] = 'v.status = ?';

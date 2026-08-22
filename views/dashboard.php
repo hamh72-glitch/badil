@@ -27,10 +27,15 @@ $subsWorking = (int)Db::val('SELECT COUNT(*) FROM substitutes WHERE available = 
 
 // أحدث الطلبات
 if (Auth::isSchool()) {
-    $recent = Db::all('SELECT * FROM vacancies WHERE school_user_id = ? ORDER BY created_at DESC LIMIT 5', [Auth::id()]);
+    $myName = Auth::user()['full_name'];
+    $recent = Db::all('SELECT * FROM vacancies WHERE school_user_id = ? OR shared_with = ? ORDER BY created_at DESC LIMIT 5', [Auth::id(), $myName]);
 } else {
     $recent = Db::all('SELECT * FROM vacancies ORDER BY created_at DESC LIMIT 5');
 }
+
+// أحدث الإشعارات
+$notifCount = Notifications::unreadCount(Auth::id());
+$latestNotifs = Notifications::latest(Auth::id(), 3);
 
 layout_header('لوحة التحكم');
 ?>
@@ -78,6 +83,31 @@ layout_header('لوحة التحكم');
     <div class="stat-card">
         <div class="stat-ico" style="background:#fee2e2;color:#b91c1c">🔄</div>
         <div><strong><?= $subsWorking ?></strong><span>مكلفون حالياً</span></div>
+    </div>
+</div>
+<?php endif; ?>
+
+<?php if ($notifCount > 0): ?>
+<div class="card" style="border-right: 4px solid #ef4444;">
+    <div class="card-head">
+        <h3>🔔 إشعارات جديدة (<?= $notifCount ?>)</h3>
+        <a class="link" href="index.php?page=notifications">عرض الكل</a>
+    </div>
+    <div class="notif-list">
+        <?php foreach ($latestNotifs as $n): ?>
+            <div class="notif-item unread">
+                <div class="notif-icon">🔗</div>
+                <div class="notif-body">
+                    <p><?= e($n['message']) ?></p>
+                    <small class="muted"><?= e(fmt_datetime($n['created_at'])) ?></small>
+                </div>
+                <div class="notif-actions">
+                    <?php if ($n['vacancy_id']): ?>
+                        <a class="btn tiny" href="index.php?page=request_view&id=<?= $n['vacancy_id'] ?>">عرض</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        <?php endforeach; ?>
     </div>
 </div>
 <?php endif; ?>

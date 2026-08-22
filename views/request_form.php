@@ -68,6 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             if ($edit) {
                 Db::update('vacancies', $in, 'id = ?', [$id]);
+                $vacUpdated = Db::one('SELECT * FROM vacancies WHERE id = ?', [$id]);
+                if (!empty($in['shared_with']) && ($in['shared_with'] !== ($vac['shared_with'] ?? ''))) {
+                    Notifications::sharedRequest($vacUpdated, $in['shared_with']);
+                }
                 flash('تم تحديث الطلب بنجاح.');
                 redirect('index.php?page=request&id=' . $id);
             } else {
@@ -75,6 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $in['created_by'] = Auth::id();
                 if (Auth::isSchool()) $in['school_user_id'] = Auth::id();
                 $newId = Db::insert('vacancies', $in);
+                if (!empty($in['shared_with'])) {
+                    $newVac = Db::one('SELECT * FROM vacancies WHERE id = ?', [$newId]);
+                    Notifications::sharedRequest($newVac, $in['shared_with']);
+                }
                 flash('تم إرسال طلب البديل بنجاح.');
                 redirect('index.php?page=request&id=' . $newId);
             }

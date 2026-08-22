@@ -76,6 +76,9 @@ switch ($page) {
     case 'password':
         require VIEWS_DIR . '/password.php';
         break;
+    case 'notifications':
+        require VIEWS_DIR . '/notifications.php';
+        break;
     default:
         require VIEWS_DIR . '/dashboard.php';
 }

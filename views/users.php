@@ -230,6 +230,12 @@ layout_header('المدارس والمستخدمون');
                                         <input type="hidden" name="uid" value="<?= $u['id'] ?>">
                                         <button class="btn tiny ghost" type="submit"><?= $u['is_active'] ? 'إيقاف' : 'تفعيل' ?></button>
                                     </form>
+                                    <form method="post" class="inline" onsubmit="return confirm('حذف حساب المدرسة نهائياً؟');">
+                                        <input type="hidden" name="csrf" value="<?= e(csrf_token()) ?>">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="uid" value="<?= $u['id'] ?>">
+                                        <button class="btn tiny danger-ghost" type="submit">حذف</button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

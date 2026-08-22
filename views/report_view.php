@@ -5,13 +5,13 @@
  */
 require VIEWS_DIR . '/layout.php';
 
-if (!in_array(Auth::role(), ['admin', 'directorate'], true)) {
+$type = get('type', 'assignment');
+$id = (int)get('id', 0);
+
+if (!in_array(Auth::role(), ['admin', 'directorate'], true) && !(Auth::isSchool() && $type === 'request')) {
     flash('التقارير متاحة لحساب المديرية ومسؤول النظام.', 'error');
     redirect('index.php?page=dashboard');
 }
-
-$type = get('type', 'assignment');
-$id = (int)get('id', 0);
 
 // بيانات عامة للترويسة
 $headerLines = lines(Settings::text('letter_header'));
@@ -47,6 +47,13 @@ switch ($type) {
         if (!$vac) {
             flash('الطلب غير موجود.', 'error');
             redirect('index.php?page=reports');
+        }
+        if (Auth::isSchool()) {
+            $myName = Auth::user()['full_name'];
+            if ((int)$vac['school_user_id'] !== Auth::id() && $vac['shared_with'] !== $myName) {
+                flash('لا يمكنك طباعة هذا الطلب.', 'error');
+                redirect('index.php?page=requests');
+            }
         }
         $doc = 'تقرير طلب البديل #' . $vac['id'];
         break;
@@ -145,14 +152,14 @@ switch ($type) {
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/app.css">
     <?php if ($type === 'all'): ?>
-    <style>@media print { @page { size: A4 landscape; margin: 10mm; } .compact-report, .compact-report * { font-family: 'Times New Roman', Times, serif !important; } }</style>
+    <style>@media print { @page { size: A4 landscape; margin: 10mm; } }</style>
     <?php endif; ?>
 </head>
 <body class="report-body">
 
 <div class="toolbar no-print">
     <div class="row">
-        <a class="btn ghost" href="index.php?page=reports">→ العودة للتقارير</a>
+        <a class="btn ghost" href="index.php?page=<?= Auth::isSchool() ? 'requests' : 'reports' ?>">→ العودة</a>
         <button class="btn primary" onclick="window.print()">🖨️ طباعة</button>
     </div>
     <p class="muted small">استخدم زر الطباعة لحفظ التقرير PDF أو طباعته.</p>
@@ -487,7 +494,11 @@ switch ($type) {
     <?php endif; ?>
 
     <!-- اسم التوقيع -->
-    <?php if ($signName = Settings::text('sign_name')): ?>
+    <?php if ($type === 'request' && Auth::isSchool()): ?>
+        <div class="doc-sign">
+            <div class="doc-sign-title">مدرسة <?= e(Auth::user()['full_name']) ?></div>
+        </div>
+    <?php elseif ($signName = Settings::text('sign_name')): ?>
         <div class="doc-sign">
             <div class="doc-sign-title"><?= nl2br(e($signName)) ?></div>
         </div>

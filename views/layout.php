@@ -9,6 +9,10 @@ function nav_items(): array
         ['page' => 'dashboard', 'label' => 'لوحة التحكم', 'icon' => '🏠'],
         ['page' => 'requests', 'label' => 'طلبات البديل', 'icon' => '📋'],
     ];
+    if (Auth::check()) {
+        $notifCount = Notifications::unreadCount(Auth::id());
+        $items[] = ['page' => 'notifications', 'label' => 'الإشعارات', 'icon' => '🔔', 'badge' => $notifCount];
+    }
     if ($role !== 'school') {
         $items[] = ['page' => 'substitutes', 'label' => 'سجل البدلاء', 'icon' => '👥'];
     }
@@ -56,6 +60,9 @@ function layout_header(string $title, array $extra = []): void
                    href="index.php?page=<?= e($it['page']) ?>">
                     <span class="nav-ico"><?= $it['icon'] ?></span>
                     <?= e($it['label']) ?>
+                    <?php if (!empty($it['badge'])): ?>
+                        <span class="nav-badge"><?= $it['badge'] ?></span>
+                    <?php endif; ?>
                 </a>
             <?php endforeach; ?>
         </nav>
@@ -99,6 +106,9 @@ function layout_footer(): void
                 <a class="m-nav-item <?= (get('page', 'dashboard') === $it['page']) ? 'active' : '' ?>"
                    href="index.php?page=<?= e($it['page']) ?>">
                     <span><?= $it['icon'] ?></span>
+                    <?php if (!empty($it['badge'])): ?>
+                        <span class="m-nav-badge"><?= $it['badge'] ?></span>
+                    <?php endif; ?>
                     <small><?= e($it['label']) ?></small>
                 </a>
             <?php endforeach; ?>

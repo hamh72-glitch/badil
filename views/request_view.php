@@ -14,9 +14,12 @@ if (!$v) {
 }
 
 // صلاحية الاطلاع
-if (Auth::isSchool() && (int)$v['school_user_id'] !== Auth::id()) {
-    flash('لا يمكنك الاطلاع على هذا الطلب.', 'error');
-    redirect('index.php?page=requests');
+if (Auth::isSchool()) {
+    $myName = Auth::user()['full_name'];
+    if ((int)$v['school_user_id'] !== Auth::id() && $v['shared_with'] !== $myName) {
+        flash('لا يمكنك الاطلاع على هذا الطلب.', 'error');
+        redirect('index.php?page=requests');
+    }
 }
 
 $canEdit = Auth::canEditVacancy($v);
@@ -34,6 +37,9 @@ layout_header('تفاصيل الطلب #' . $v['id']);
         <?php endif; ?>
         <?php if ($v['status'] === 'assigned'): ?>
             <a class="btn primary" href="index.php?page=report&type=assignment&id=<?= $v['id'] ?>">🖨️ طباعة كتاب التكليف</a>
+        <?php endif; ?>
+        <?php if (Auth::isSchool() || Auth::canAssign()): ?>
+            <a class="btn" href="index.php?page=report&type=request&id=<?= $v['id'] ?>">📄 طباعة الطلب</a>
         <?php endif; ?>
         <?php if ($canEnd): ?>
             <a class="btn danger" href="index.php?page=end_work&id=<?= $v['id'] ?>">🏁 إنهاء عمل البديل</a>
